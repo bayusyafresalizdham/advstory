@@ -244,9 +244,9 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                                     (widget.gapSize +
                                                             widget
                                                                 .strokeWidth) *
-                                                        2) /
+                                                        2.5) /
                                                 2 +
-                                            0,
+                                            20,
                                         fit: BoxFit.cover,
                                         frameBuilder:
                                             (context, child, frame, _) {
@@ -276,7 +276,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                                       (widget.gapSize +
                                                               widget
                                                                   .strokeWidth) *
-                                                          2 +
+                                                          1.5 +
                                                       (-7)),
                                                   child: Shimmer(
                                                       style:
