@@ -277,7 +277,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                                               widget
                                                                   .strokeWidth) *
                                                           2 +
-                                                      40),
+                                                      0),
                                                   child: Shimmer(
                                                       style:
                                                           widget.shimmerStyle),
