@@ -240,13 +240,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                             (widget.gapSize +
                                                     widget.strokeWidth) *
                                                 2,
-                                        height: (widget.size.height -
-                                                    (widget.gapSize +
-                                                            widget
-                                                                .strokeWidth) *
-                                                        3) /
-                                                2 +
-                                            20,
+                                        height: 200,
                                         fit: BoxFit.cover,
                                         frameBuilder:
                                             (context, child, frame, _) {
