@@ -277,7 +277,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                                               widget
                                                                   .strokeWidth) *
                                                           2 +
-                                                      0),
+                                                      (-7)),
                                                   child: Shimmer(
                                                       style:
                                                           widget.shimmerStyle),
@@ -292,7 +292,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                       ),
                                       const Center(
                                         child: Text(
-                                          'Make my day12',
+                                          'Make my day',
                                           style: TextStyle(
                                               color: Color(0xFFC82626),
                                               fontSize: 8,
