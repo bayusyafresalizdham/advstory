@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:advstory/advstory.dart';
 import 'package:example/mock_story_data.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class AdvStoryTrayCustomization extends StatefulWidget {
 class _AdvStoryTrayCustomizationState extends State<AdvStoryTrayCustomization> {
   double _width = 85;
   double _height = 85;
-  double _radius = 50;
+  double _radius = 20;
   double _strokeWidth = 2;
   double _gapSize = 3;
   bool _showUserNames = false;
@@ -43,7 +44,7 @@ class _AdvStoryTrayCustomizationState extends State<AdvStoryTrayCustomization> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: widget.isHorizontal ? _height + 60 : double.maxFinite,
+      height: widget.isHorizontal ? _height + 60 + 14 : double.maxFinite,
       width: widget.isHorizontal ? double.maxFinite : _width + 60,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +80,8 @@ class _AdvStoryTrayCustomizationState extends State<AdvStoryTrayCustomization> {
               ],
             ),
           ),
-          Expanded(
+          SizedBox(
+            height: 100,
             child: AdvStory(
               storyCount: userNames.length,
               storyBuilder: (index) async {
@@ -103,13 +105,19 @@ class _AdvStoryTrayCustomizationState extends State<AdvStoryTrayCustomization> {
               ),
               trayBuilder: (index) {
                 return AdvStoryTray(
+                  
                   url: profilePics[index],
-                  size: Size(_width, _height),
+                  size: const Size(76, 97),
                   shape: BoxShape.rectangle,
-                  borderRadius: index % 2 == 0 ? _radius : _radius / 2,
+                  bgStory: profilePics[index],
+                  // borderRadius: index % 2 == 0 ? _radius : _radius / 2,
+                  borderRadius: 20,
                   borderGradientColors: _selectedColors,
-                  strokeWidth: _strokeWidth,
-                  gapSize: _gapSize,
+                  strokeWidth: 0,
+                  isMyProfile: index == 0,
+                  urlFrontImageProfile: profilePics[index],
+                  gapSize: 3,
+
                   username: _showUserNames
                       ? Text(
                           userNames[index],

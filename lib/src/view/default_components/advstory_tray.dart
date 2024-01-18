@@ -1,5 +1,6 @@
+import 'dart:typed_data';
+
 import 'package:advstory/advstory.dart';
-import 'package:advstory/src/util/animated_border_painter.dart';
 import 'package:advstory/src/view/components/shimmer.dart';
 import 'package:flutter/material.dart';
 
@@ -30,9 +31,16 @@ class AdvStoryTray extends AnimatedTray {
     Key? key,
     required this.url,
     this.username,
+    this.isMyProfile = false,
+    this.onTapProfile,
+    this.bgVideo,
     this.size = const Size(80, 80),
     this.shimmerStyle = const ShimmerStyle(),
     this.shape = BoxShape.circle,
+    this.heightFrontImageProfile = 29,
+    this.widthFrontImageProfile = 29,
+    this.urlFrontImageProfile = '',
+    required this.bgStory,
     this.borderGradientColors = const [
       Color(0xaf405de6),
       Color(0xaf5851db),
@@ -69,6 +77,13 @@ class AdvStoryTray extends AnimatedTray {
   /// Size of the story tray. For a circular tray, width and height must be
   /// equal.
   final Size size;
+  final double widthFrontImageProfile;
+  final double heightFrontImageProfile;
+  final String urlFrontImageProfile;
+  final String bgStory;
+  final Function? onTapProfile;
+  final bool isMyProfile;
+  final Uint8List? bgVideo;
 
   /// Border gradient colors. Two same color creates a solid border.
   final List<Color> borderGradientColors;
@@ -98,6 +113,15 @@ class AdvStoryTray extends AnimatedTray {
 /// State of the [AdvStoryTray] widget.
 class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
     with TickerProviderStateMixin {
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1000),
+    reverseDuration: const Duration(milliseconds: 1000),
+    value: 1,
+    lowerBound: 1,
+    upperBound: 1.1,
+  );
+
   late final _rotationController = AnimationController(
     vsync: this,
     duration: widget.animationDuration,
@@ -123,6 +147,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
     setState(() {
       _gradientColors = _fadedColors;
     });
+    _controller.repeat(reverse: true);
 
     _rotationController.repeat();
   }
@@ -130,7 +155,8 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
   @override
   void stopAnimation() {
     _rotationController.reset();
-
+    _controller.reset();
+    _controller.stop();
     setState(() {
       _gradientColors = widget.borderGradientColors;
     });
@@ -156,83 +182,239 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
   @override
   void dispose() {
     _rotationController.dispose();
+    _controller.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: widget.size.width,
-          height: widget.size.height,
-          child: Stack(
+    return SizedBox(
+      width: widget.size.width,
+      height: widget.size.height + 14,
+      child: Stack(
+        children: [
+          Column(
             children: [
-              CustomPaint(
-                painter: AnimatedBorderPainter(
-                  gradientColors: _gradientColors,
-                  gapSize: widget.gapSize,
-                  radius: widget.shape == BoxShape.circle
-                      ? widget.size.width
-                      : widget.borderRadius,
-                  strokeWidth: widget.strokeWidth,
-                  animation: CurvedAnimation(
-                    parent: Tween(begin: 0.0, end: 1.0).animate(
-                      _rotationController,
+              SizedBox(
+                width: widget.size.width,
+                height: widget.size.height,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          widget.borderRadius -
+                              (widget.strokeWidth + widget.gapSize),
+                        ),
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0xFFC5C5C5),
+                            offset: Offset(0, 1),
+                            blurRadius: 3,
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          widget.borderRadius -
+                              (widget.strokeWidth + widget.gapSize),
+                        ),
+                        child: widget.isMyProfile
+                            ? ScaleTransition(
+                                scale: _controller,
+                                child: Container(
+                                  width: widget.size.width -
+                                      (widget.gapSize + widget.strokeWidth) * 2,
+                                  padding: EdgeInsets.zero,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Image.network(
+                                        widget.bgStory,
+                                        width: widget.size.width -
+                                            (widget.gapSize +
+                                                    widget.strokeWidth) *
+                                                2,
+                                        height: (widget.size.height -
+                                                    (widget.gapSize +
+                                                            widget
+                                                                .strokeWidth) *
+                                                        2) /
+                                                2 +
+                                            20,
+                                        fit: BoxFit.cover,
+                                        frameBuilder:
+                                            (context, child, frame, _) {
+                                          return frame != null
+                                              ? TweenAnimationBuilder<double>(
+                                                  tween: Tween<double>(
+                                                      begin: .1, end: 1),
+                                                  curve: Curves.ease,
+                                                  duration: const Duration(
+                                                      milliseconds: 300),
+                                                  builder:
+                                                      (BuildContext context,
+                                                          double opacity, _) {
+                                                    return Opacity(
+                                                      opacity: opacity,
+                                                      child: child,
+                                                    );
+                                                  },
+                                                )
+                                              : SizedBox(
+                                                  width: widget.size.width -
+                                                      (widget.gapSize +
+                                                              widget
+                                                                  .strokeWidth) *
+                                                          2,
+                                                  height: (widget.size.height -
+                                                      (widget.gapSize +
+                                                              widget
+                                                                  .strokeWidth) *
+                                                          2 +
+                                                      20),
+                                                  child: Shimmer(
+                                                      style:
+                                                          widget.shimmerStyle),
+                                                );
+                                        },
+                                        errorBuilder: (_, __, ___) {
+                                          return const Icon(Icons.error);
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      const Center(
+                                        child: Text(
+                                          'Make my day',
+                                          style: TextStyle(
+                                              color: Color(0xFFC82626),
+                                              fontSize: 8,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : ScaleTransition(
+                                scale: _controller,
+                                child: Image.network(
+                                  widget.bgStory,
+                                  width: widget.size.width -
+                                      (widget.gapSize + widget.strokeWidth) * 2,
+                                  height: (widget.size.height -
+                                      (widget.gapSize + widget.strokeWidth) *
+                                          2 +
+                                      20),
+                                  fit: BoxFit.cover,
+                                  frameBuilder: (context, child, frame, _) {
+                                    return frame != null
+                                        ? TweenAnimationBuilder<double>(
+                                            tween: Tween<double>(
+                                                begin: .1, end: 1),
+                                            curve: Curves.ease,
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            builder: (BuildContext context,
+                                                double opacity, _) {
+                                              return Opacity(
+                                                opacity: opacity,
+                                                child: child,
+                                              );
+                                            },
+                                          )
+                                        : SizedBox(
+                                            width: widget.size.width -
+                                                (widget.gapSize +
+                                                        widget.strokeWidth) *
+                                                    2,
+                                            height: (widget.size.height -
+                                                (widget.gapSize +
+                                                        widget.strokeWidth) *
+                                                    2 +
+                                                20),
+                                            child: Shimmer(
+                                                style: widget.shimmerStyle));
+                                  },
+                                  errorBuilder: (_, __, ___) {
+                                    return const Icon(Icons.error);
+                                  },
+                                ),
+                              ),
+                      ),
                     ),
-                    curve: Curves.slowMiddle,
-                  ),
-                ),
-                child: SizedBox(
-                  width: widget.size.width,
-                  height: widget.size.height,
+                  ],
                 ),
               ),
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                    widget.borderRadius - (widget.strokeWidth + widget.gapSize),
-                  ),
-                  child: Image.network(
-                    widget.url,
-                    width: widget.size.width -
-                        (widget.gapSize + widget.strokeWidth) * 2,
-                    height: widget.size.height -
-                        (widget.gapSize + widget.strokeWidth) * 2,
-                    fit: BoxFit.cover,
-                    frameBuilder: (context, child, frame, _) {
-                      return frame != null
-                          ? TweenAnimationBuilder<double>(
-                              tween: Tween<double>(begin: .1, end: 1),
-                              curve: Curves.ease,
-                              duration: const Duration(milliseconds: 300),
-                              builder:
-                                  (BuildContext context, double opacity, _) {
-                                return Opacity(
-                                  opacity: opacity,
-                                  child: child,
-                                );
-                              },
-                            )
-                          : Shimmer(style: widget.shimmerStyle);
-                    },
-                    errorBuilder: (_, __, ___) {
-                      return const Icon(Icons.error);
-                    },
-                  ),
+              if (widget.username != null) ...[
+                const SizedBox(height: 5),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: widget.username,
                 ),
-              ),
+              ],
             ],
           ),
-        ),
-        if (widget.username != null) ...[
-          const SizedBox(height: 5),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: widget.username,
-          ),
+          if (widget.isMyProfile)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: InkWell(
+                onTap: () {
+                  if (widget.onTapProfile != null) {
+                    widget.onTapProfile!();
+                  }
+                },
+                child: Container(
+                  width: widget.widthFrontImageProfile,
+                  height: widget.heightFrontImageProfile,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      shape: BoxShape.circle,
+                      color: const Color(0xFFFFB84C)),
+                  child: const Center(
+                    child: Icon(
+                      Icons.add,
+                      size: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: InkWell(
+                onTap: () {
+                  if (widget.onTapProfile != null) {
+                    widget.onTapProfile!();
+                  }
+                },
+                child: Container(
+                  width: widget.widthFrontImageProfile,
+                  height: widget.heightFrontImageProfile,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(
+                              widget.urlFrontImageProfile.isEmpty
+                                  ? widget.urlFrontImageProfile
+                                  : widget.urlFrontImageProfile),
+                          fit: BoxFit.cover),
+                      border: Border.all(color: Colors.white),
+                      shape: BoxShape.circle,
+                      color: Colors.blueGrey),
+                ),
+              ),
+            )
         ],
-      ],
+      ),
     );
   }
 }

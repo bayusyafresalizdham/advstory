@@ -5,8 +5,8 @@ import 'package:advstory/src/controller/advstory_player_controller.dart';
 import 'package:advstory/src/model/models.dart';
 import 'package:advstory/src/util/build_helper.dart';
 import 'package:advstory/src/view/components/story_indicator.dart';
-import 'package:advstory/src/view/story_view.dart';
 import 'package:advstory/src/view/inherited_widgets/data_provider.dart';
+import 'package:advstory/src/view/story_view.dart';
 import 'package:advstory/src/view/tray_view.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +26,8 @@ class AdvStory extends StatefulWidget {
     required this.storyCount,
     required this.storyBuilder,
     required this.trayBuilder,
+    this.onTapEmptyStory,
+    this.myStoryLength = 0,
     AdvStoryController? controller,
     this.buildStoryOnTrayScroll = true,
     this.preloadStory = true,
@@ -47,6 +49,8 @@ class AdvStory extends StatefulWidget {
     required this.storyBuilder,
     this.preloadContent = true,
     this.preloadStory = true,
+    this.onTapEmptyStory,
+    this.myStoryLength = 0,
     this.style = const AdvStoryStyle(),
     required AdvStoryPlayerController controller,
   })  : hasTrays = false,
@@ -64,6 +68,7 @@ class AdvStory extends StatefulWidget {
   /// more general options.
   /// {@endtemplate}
   final AdvStoryStyle style;
+  final int myStoryLength;
 
   /// {@template advstory.storyController}
   /// A controller for manipulating flow and listening user interactions.
@@ -120,6 +125,7 @@ class AdvStory extends StatefulWidget {
   /// set this to false.
   /// {@endtemplate}
   final bool preloadStory;
+  final Function? onTapEmptyStory;
 
   /// {@template advstory.preloadContent}
   /// Sets whether content preload is enabled or not.
@@ -155,7 +161,7 @@ class _AdvStoryState extends State<AdvStory> with TickerProviderStateMixin {
   @override
   void initState() {
     _opacityController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 1),
       vsync: this,
       value: 1.0,
     );
@@ -204,6 +210,12 @@ class _AdvStoryState extends State<AdvStory> with TickerProviderStateMixin {
         preloadContent: widget.preloadContent,
         preloadStory: widget.preloadStory,
         style: widget.style,
+        myStoryLength: widget.myStoryLength,
+        onTapEmptyStory: () {
+          if (widget.onTapEmptyStory != null) {
+            widget.onTapEmptyStory!();
+          }
+        },
         trayBuilder: widget.trayBuilder!,
       );
     }

@@ -85,14 +85,14 @@ class _VideoContentState extends StoryContentState<VideoContent> {
 
     if (_videoController?.value.isInitialized == true) {
       return Container(
-          height: double.infinity,
-          width: double.infinity,
-          color:Colors.black,
-          child:Center(
-            child:AspectRatio(
-                  aspectRatio: _videoController!.value.aspectRatio,
-                  child: VideoPlayer(_videoController!),
-                          ),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.black,
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: _videoController!.value.aspectRatio,
+            child: VideoPlayer(_videoController!),
+          ),
         ),
       );
     }
