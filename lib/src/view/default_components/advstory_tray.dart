@@ -292,7 +292,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                       ),
                                       const Center(
                                         child: Text(
-                                          'Make my day',
+                                          'Make my day12',
                                           style: TextStyle(
                                               color: Color(0xFFC82626),
                                               fontSize: 8,
