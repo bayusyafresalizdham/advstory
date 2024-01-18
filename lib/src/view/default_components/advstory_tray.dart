@@ -246,7 +246,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                                                 .strokeWidth) *
                                                         2) /
                                                 2 +
-                                            20,
+                                            0,
                                         fit: BoxFit.cover,
                                         frameBuilder:
                                             (context, child, frame, _) {
@@ -295,7 +295,7 @@ class _AdvStoryTrayState extends AnimatedTrayState<AdvStoryTray>
                                           'Make my day',
                                           style: TextStyle(
                                               color: Color(0xFFC82626),
-                                              fontSize: 8,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.w700),
                                         ),
                                       )
