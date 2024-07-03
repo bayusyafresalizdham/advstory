@@ -94,7 +94,7 @@ class _ImageContentState extends StoryContentState<ImageContent> {
                     duration: const Duration(milliseconds: 300),
                   );
           },
-          fit: BoxFit.cover,
+          fit: BoxFit.fitWidth,
           gaplessPlayback: true,
         ),
       );
