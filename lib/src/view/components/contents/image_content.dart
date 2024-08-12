@@ -83,7 +83,9 @@ class _ImageContentState extends StoryContentState<ImageContent> {
 
     if (_imageProvider != null) {
       return Container(
-        constraints: const BoxConstraints.expand(),
+        color: Colors.black,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Image(
           image: _imageProvider!,
           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
